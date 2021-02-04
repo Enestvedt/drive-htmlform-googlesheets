@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<!-- form pagination script comes from w3school (https://www.w3schools.com/howto/howto_js_form_steps.asp) -->
+<html>
+  <head>
+    <base target="_top">
+    <?!= include("page-css"); ?>
+  </head>
+  
+  <body>
+    <div class="container">
+      
+      <h2>2020 Student Survey</h2>
+       <div class = "topright" id= "validator">
+         <div id="cId"></div>
+         <div id="cName"></div>
+         <div id="teacher"></div>
+         <div id="sTime"></div>
+       </div>
+       <hr width="100%" size="6" align="center" color="#CD5C5C">
+       <br>
+ 
+       
+        <form name="submit-to-google-sheet" id="submit-to-google-sheet" class="customRadio" onsubmit="nextBtn.disabled = true; return true;">
+          <div class="holder">
+            <?!= questions; ?>
+            <div class="tab" id="output">
+            </div>
+          </div>
+          
+          <div style="overflow:auto;">
+            <div style="float:left;">
+              <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
+            </div>
+            <div style="float:right;">
+              <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
+            </div>
+          </div>
+        </form>
+     
+    </div>
+      
+  <<script>
+  
+  //ideally all of this script would be in a separate script file, but I couldn't get my script to work.  Anyway, this does function, it's just ugly and hard to work on.
+  
+  var currentTab = 0; // Current tab is set to be the first tab (0)
+  showTab(currentTab); // Display the current tab
+
+  function showTab(n) {
+    // This function will display the specified tab of the form...
+    var x = document.getElementsByClassName("tab");
+    x[n].style.display = "block";
+    //... and fix the Previous/Next buttons:
+    
+    if (n == 0){
+      document.getElementById("nextBtn").setAttribute('onclick','loadClassInfo()'); 
+      document.getElementById("prevBtn").style.display = "none"; }
+
+    else if (n == 1){
+      document.getElementById("nextBtn").setAttribute('onclick','loadAudio()'); 
+      document.getElementById("prevBtn").style.display = "inline";
+      document.getElementById("prevBtn").setAttribute('onclick','nextPrev(-1)');}
+
+    else if (n == (x.length - 2)) {
+      document.getElementById("nextBtn").innerHTML = "Submit";
+      document.getElementById("nextBtn").setAttribute('onclick',null); 
+      document.getElementById("nextBtn").setAttribute('type','submit'); 
+      document.getElementById("prevBtn").style.display = "inline";
+      document.getElementById("prevBtn").setAttribute('onclick','nextPrev(-1)');}
+
+    else if (n == (x.length - 1)) {
+      document.getElementById("nextBtn").style.display = "none";
+      document.getElementById("prevBtn").style.display = "none";}
+    
+    else {
+      document.getElementById("nextBtn").innerHTML = "Next";
+      document.getElementById("nextBtn").setAttribute('type','button');
+      document.getElementById("nextBtn").setAttribute('onclick','nextPrev(1)'); 
+      document.getElementById("prevBtn").style.display = "inline";
+      document.getElementById("prevBtn").setAttribute('onclick','nextPrev(-1)'); }
+
+  }
+
+  function nextPrev(n) {
+    // This function will figure out which tab to display
+    var x = document.getElementsByClassName("tab");
+    // Exit the function if any field in the current tab is invalid:
+    //if (n == 1 && !validateForm()) return false;
+    // Hide the current tab:
+    x[currentTab].style.display = "none";
+    // Increase or decrease the current tab by 1:
+    currentTab = currentTab + n;
+    // if you have reached the end of the form...
+    if (currentTab > x.length) {
+      // ... the form gets submitted:
+      //document.getElementById("submit-to-google-sheet").submit();
+      return false;
+    }
+    // Otherwise, display the correct tab:
+    showTab(currentTab);
+  }
+
+  function loadClassInfo(){
+    const classInfo = JSON.parse(<?= classInfo ?>);
+    var cID = classID = document.querySelector('input[name="Enter your class ID number."]').value;
+    var result = classInfo.find(file => file.classID === cID);
+  
+      if (result){
+        document.getElementById("validator").style.visibility = "visible";
+        document.getElementById("cId").textContent = result.classID;
+        document.getElementById("cName").textContent = result.courseName;
+        document.getElementById("teacher").textContent = result.teacher;
+        document.getElementById("sTime").textContent = result.startTime;
+        nextPrev(1);
+      }
+      else{
+        alert('This in not one of our classes.  Please enter a valid class ID number.');
+        return false;
+      }
+  }
+
+
+
+  function loadAudio(){
+    const audioUrls = JSON.parse(<?= audioUrls ?>);
+    var a = document.getElementsByTagName('audio');
+    
+    for (var i = 0, l = a.length; i<l; i++){
+      var myId = a[i].id;
+      var qText = a[i].title;
+      var lang = language = document.querySelector('input[name="Which language would you like to hear?"]:checked').value;
+    
+      var result = audioUrls.find(file => file.name === qText +".m4a" && file.language === lang);
+  
+      if (result){
+        
+          document.getElementById(myId).setAttribute('src', result.url);  
+          document.getElementById(myId).style.visibility = "visible";       
+      }
+      else{
+        console.log("audio file " + myId + " not found");
+        document.getElementById(myId).style.visibility = "hidden";
+      }
+
+    }
+    nextPrev(1);
+  }
+
+  //I got the following script and idea for using fetch from Jamie Wilson - https://github.com/jamiewilson/form-to-google-sheets
+
+    const scriptUrl = '<?!= scriptUrl; ?>'
+    const form = document.forms['submit-to-google-sheet']
+
+    form.addEventListener('submit', e => {
+      e.preventDefault()
+      fetch(scriptUrl, { method: 'POST', body: new FormData(form)})
+        .then(response => document.getElementById('output').textContent = "Thank you for your feedback.  We will use it to improve our school!")
+        .then(response =>  nextPrev(1))
+        .catch(error => document.getElementById('output').textContent = "It didn't work.  Ask for help and try again.")
+    })
+  
+</script>
+  
+ </body>
+
+</html>
