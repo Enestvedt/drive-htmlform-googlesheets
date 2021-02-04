@@ -4,7 +4,7 @@ Google Apps Script reads a google Sheet to to dynamically create an Html survey.
 //Thank you to Chicago Computer Classes YouTube Channel (https://www.youtube.com/c/LearnGoogleSpreadsheets/featured) where I learned to do most of what follows.
 
 
-//This is a container bound script.  It reads a spreadsheet and creates a paginated survey for each question is findes in the sheet (whatever you add to the sheet, it will generate on the survey).  Each submission is then stored on another sheet in the Spreadsheet.  In addition, it requires a language selection and audio interprets the English text to the selected language if it finds an audio file in the Drive that matches the text and the language selction.
+//This is a container bound script, though it doesn't need to be that way.  The script reads a spreadsheet and creates a paginated survey for each question is findes in the sheet (whatever you add to the sheet, it will generate on the survey).  Each submission is then stored on another sheet in the Spreadsheet.  In addition, it requires a language selection and audio interprets the English text to the selected language if it finds an audio file in the Drive that matches the text and the language selction.
 
 //Users' cross-site tracking cannot be disabled in Safari settings (appears to be unique to Safari).  When that service is enabled, audio will not load from G Drive.  You can turn it off in preferences - it is a user setting.
 
