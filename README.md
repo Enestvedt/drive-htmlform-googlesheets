@@ -1,4 +1,7 @@
 # drive-htmlform-googlesheets
+See a working version at:  https://script.google.com/macros/s/AKfycbytNQgCuNU8c_jYnvfX7oaFt8gKd66FlnK2Tq0P6Qwp/dev
+The spreadsheet it draws from and writes to:  https://docs.google.com/spreadsheets/d/1OOkymmDbcj-52bbztmNGnEgIOwVodLPpNNg9Ao0naIs/edit?usp=sharing
+
 Google Apps Script reads a google Sheet to to dynamically create an Html survey.  It reads Google Drive folder to load audio files that correspond with each question and possible response.  It then records responses to a Google sheet.  
 
 //Thank you to Chicago Computer Classes YouTube Channel (https://www.youtube.com/c/LearnGoogleSpreadsheets/featured) where I learned to do most of what follows.
